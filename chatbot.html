@@ -1,332 +1,646 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Set character encoding to UTF-8 for universal character support -->
     <meta charset="UTF-8">
-    <!-- Ensure responsive design for mobile and desktop -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Set page title -->
-    <title>Conversational Chatbot</title>
+    <title>Advanced AI Chatbot</title>
     <style>
-        /* Import Poppins font from Google Fonts for a modern look */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
-        /* Define CSS variables for consistent colors and styles */
         :root {
-            --primary-color: #6366f1; /* Main blue color for buttons and accents */
-            --secondary-color: #4f46e5; /* Darker blue for hover effects */
-            --light-color: #f8f9fa; /* Light gray for backgrounds */
-            --dark-color: #212529; /* Dark color for text */
-            --border-radius: 12px; /* Rounded corners for elements */
-            --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #4facfe;
+            --success: #10b981;
+            --error: #ef4444;
+            --dark: #1f2937;
+            --light: #f8fafc;
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
         
-        /* Apply box-sizing to all elements and remove default margins/padding */
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
         
-        /* Style the body with a gradient background and centered content */
         body {
-            font-family: 'Poppins', sans-serif; /* Use Poppins font */
-            background: linear-gradient(135deg, #c2e9fb 0%, #a1c4fd 100%); /* Gradient background */
-            margin: 0; /* Remove default margin */
-            padding: 0; /* Remove default padding */
-            height: 100vh; /* Full viewport height */
-            display: flex; /* Center content */
-            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
             align-items: center;
-            overflow: hidden; /* Prevent scrolling */
+            justify-content: center;
+            padding: 20px;
         }
         
-        /* Style the chat container with a semi-transparent white background */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
         .chat-container {
-            background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
-            border-radius: var(--border-radius); /* Rounded corners */
-            box-shadow: var(--box-shadow); /* Add shadow for depth */
-            width: 90%; /* Responsive width */
-            max-width: 400px; /* Maximum width */
-            overflow: hidden; /* Hide overflow content */
-            animation: fadeIn 0.5s ease-out, floatUp 0.5s ease-out; /* Fade and float animations */
-            transform-origin: center; /* Animation origin */
+            width: 100%;
+            max-width: 450px;
+            height: 600px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.8s ease;
         }
         
-        /* Animation for fading in elements */
-        @keyframes fadeIn {
-            from { opacity: 0; } /* Start invisible */
-            to { opacity: 1; } /* End fully visible */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
         
-        /* Animation for floating up effect */
-        @keyframes floatUp {
-            from { transform: translateY(20px); } /* Start 20px below */
-            to { transform: translateY(0); } /* End at normal position */
-        }
-        
-        /* Animation for subtle pulsing effect */
-        @keyframes pulse {
-            0% { transform: scale(1); } /* Normal size */
-            50% { transform: scale(1.05); } /* Slightly larger */
-            100% { transform: scale(1); } /* Back to normal */
-        }
-        
-        /* Animation for sliding in elements */
-        @keyframes slideIn {
-            from { transform: translateX(-20px); opacity: 0; } /* Start left and invisible */
-            to { transform: translateX(0); opacity: 1; } /* End at normal position */
-        }
-        
-        /* Animation for gradient background movement */
-        @keyframes gradient {
-            0% { background-position: 0% 50%; } /* Start position */
-            50% { background-position: 100% 50%; } /* Middle position */
-            100% { background-position: 0% 50%; } /* Back to start */
-        }
-        
-        /* Style the chat header with an animated gradient */
         .chat-header {
-            background: linear-gradient(-45deg, #6366f1, #8b5cf6, #3b82f6, #10b981); /* Colorful gradient */
-            background-size: 300% 300%; /* Large gradient for animation */
-            animation: gradient 15s ease infinite; /* Animate gradient */
-            color: white; /* White text */
-            padding: 20px; /* Inner spacing */
-            text-align: center; /* Center text */
-            font-size: 1.3rem; /* Larger font size */
-            font-weight: bold; /* Bold text */
-            position: relative; /* For pseudo-element positioning */
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 25px 20px;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
         
-        /* Add a subtle line below the header */
-        .chat-header:after {
-            content: ''; /* Empty content */
-            position: absolute; /* Position below header */
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 4px; /* Thin line */
-            background: rgba(255, 255, 255, 0.3); /* Semi-transparent white */
-        }
-        
-        /* Style the chat body with padding and white background */
-        .chat-body {
-            padding: 25px; /* Inner spacing */
-            text-align: center; /* Center content */
-            background-color: white; /* White background */
-        }
-        
-        /* Style the input field */
-        .chat-input {
-            width: 70%; /* Take 70% of parent width */
-            border: 2px solid #e0e0e0; /* Light gray border */
-            border-radius: var(--border-radius); /* Rounded corners */
-            padding: 12px 15px; /* Inner spacing */
-            font-size: 1rem; /* Font size */
-            outline: none; /* Remove default outline */
-            transition: all 0.3s ease; /* Smooth transitions */
-            font-family: 'Poppins', sans-serif; /* Poppins font */
-        }
-        
-        /* Style input field when focused */
-        .chat-input:focus {
-            border-color: var(--primary-color); /* Blue border */
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* Glow effect */
-        }
-        
-        /* Style the send button */
-        .send-btn {
-            background-color: var(--primary-color); /* Blue background */
-            color: white; /* White text */
-            border: none; /* No border */
-            border-radius: var(--border-radius); /* Rounded corners */
-            padding: 12px 20px; /* Inner spacing */
-            margin-left: 10px; /* Space from input */
-            cursor: pointer; /* Hand cursor */
-            transition: all 0.3s ease; /* Smooth transitions */
-            font-weight: 600; /* Bold text */
-            font-family: 'Poppins', sans-serif; /* Poppins font */
-            position: relative; /* For pseudo-element */
-            overflow: hidden; /* Hide overflow */
-        }
-        
-        /* Add a shine effect on hover */
-        .send-btn:before {
-            content: ''; /* Empty content */
-            position: absolute; /* Position inside button */
+        .chat-header::before {
+            content: '';
+            position: absolute;
             top: 0;
-            left: -100%; /* Start off-screen */
+            left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); /* Shine gradient */
-            transition: 0.5s; /* Smooth transition */
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shine 3s infinite;
         }
         
-        /* Move shine effect on hover */
-        .send-btn:hover:before {
-            left: 100%; /* Move to right */
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
         
-        /* Style button on hover */
-        .send-btn:hover {
-            background-color: var(--secondary-color); /* Darker blue */
-            transform: translateY(-2px); /* Slight lift */
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); /* Shadow */
-        }
-        
-        /* Style button when clicked */
-        .send-btn:active {
-            transform: translateY(0); /* Reset lift */
-        }
-        
-        /* Style the response area */
-        .response-area {
-            margin-top: 20px; /* Space above */
-            padding: 18px; /* Inner spacing */
-            width: 80%; /* 80% of parent width */
-            background-color: #f8f9fa; /* Light gray background */
-            border-radius: var(--border-radius); /* Rounded corners */
-            display: inline-block; /* Center with text-align */
-            min-height: 60px; /* Minimum height */
-            text-align: center; /* Center text */
-            font-size: 16px; /* Font size */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Subtle shadow */
-            transition: all 0.5s ease; /* Smooth transitions */
-            position: relative; /* For positioning */
-            animation: fadeIn 0.5s ease-out; /* Fade-in animation */
-            border-left: 4px solid var(--primary-color); /* Blue left border */
-        }
-        
-        /* Style empty response area */
-        .response-area:empty {
-            padding: 0; /* No padding */
-            min-height: 0; /* No minimum height */
-            border-left: none; /* No border */
-            box-shadow: none; /* No shadow */
-            background-color: transparent; /* Transparent background */
-        }
-        
-        /* Style the hint text */
-        .hint {
-            margin-top: 20px; /* Space above */
-            color: #666; /* Gray text */
-            font-size: 0.8rem; /* Smaller font */
-            font-style: italic; /* Italic text */
-            animation: fadeIn 1s ease-out; /* Fade-in animation */
-            padding: 10px; /* Inner spacing */
-            background-color: rgba(0,0,0,0.03); /* Light background */
-            border-radius: 8px; /* Rounded corners */
-        }
-        
-        /* Style decorative floating bubbles */
-        .bubble {
-            position: absolute; /* Position freely */
-            border-radius: 50%; /* Circular shape */
-            background: rgba(255,255,255,0.1); /* Semi-transparent white */
-            animation: float 4s infinite; /* Floating animation */
-        }
-        .bubble:nth-child(1) {
-            width: 60px; /* Size */
+        .bot-avatar {
+            width: 60px;
             height: 60px;
-            left: 10%; /* Position */
-            top: 10%;
-            animation-delay: 0s; /* No delay */
+            background: linear-gradient(135deg, var(--accent), #00f2fe);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 24px;
+            animation: pulse 2s infinite;
+            position: relative;
+            z-index: 2;
         }
-        .bubble:nth-child(2) {
-            width: 40px;
-            height: 40px;
-            right: 15%;
-            top: 20%;
-            animation-delay: 1s; /* 1s delay */
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
-        .bubble:nth-child(3) {
-            width: 30px;
-            height: 30px;
-            left: 20%;
-            bottom: 20%;
-            animation-delay: 2s; /* 2s delay */
+        
+        .bot-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 2;
         }
-        .bubble:nth-child(4) {
+        
+        .bot-status {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: linear-gradient(to bottom, #f8fafc, #e2e8f0);
+        }
+        
+        .message {
+            max-width: 85%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            animation: messageSlide 0.5s ease-out;
+        }
+        
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bot-message {
+            align-self: flex-start;
+            background: white;
+            color: var(--dark);
+            border: 1px solid #e5e7eb;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .typing-indicator {
+            align-self: flex-start;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            padding: 15px 20px;
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #9ca3af;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+        
+        .chat-input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+        
+        .chat-input:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .send-btn {
             width: 50px;
             height: 50px;
-            right: 10%;
-            bottom: 10%;
-            animation-delay: 3s; /* 3s delay */
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        /* Animation for floating bubbles */
+        .send-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .control-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .control-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .welcome-message {
+            text-align: center;
+            padding: 30px 20px;
+            color: #6b7280;
+        }
+        
+        .welcome-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .suggestion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
+        .chip {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #4b5563;
+        }
+        
+        .chip:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+        }
+        
         @keyframes float {
-            0% { transform: translateY(0) rotate(0); } /* Start position */
-            50% { transform: translateY(-20px) rotate(5deg); } /* Move up and rotate */
-            100% { transform: translateY(0) rotate(0); } /* Back to start */
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .chat-container {
+                height: 100vh;
+                max-width: 100%;
+                border-radius: 0;
+            }
+            .control-panel {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Decorative floating bubbles for visual effect -->
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
+    <div class="floating-particles" id="particles"></div>
     
-    <!-- Main chat container -->
-    <div class="chat-container">
-        <!-- Header with chatbot title -->
+    <div class="control-panel">
+        <button class="control-btn" id="clearBtn" title="Clear Chat">🗑️</button>
+        <button class="control-btn" id="themeBtn" title="Toggle Theme">🎨</button>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
         <div class="chat-header">
-            Friendly Chatbot
+            <div class="bot-avatar">🤖</div>
+            <div class="bot-name">ARIA AI</div>
+            <div class="bot-status">
+                <div class="status-dot"></div>
+                <span>Online & Ready</span>
+            </div>
         </div>
-        <!-- Chat body containing input, button, and response area -->
-        <div class="chat-body">
-            <!-- Input field for user messages -->
-            <input type="text" id="one" class="chat-input" placeholder="Type your message...">
-            <!-- Button to send the message -->
-            <button id="sendBtn" class="send-btn">Send</button>
-            <!-- Area to display chatbot responses -->
-            <div id="two" class="response-area"></div>
-            <!-- Hint text suggesting possible inputs -->
-            <div class="hint">Try saying: hello, how are you, what's your name, tell me a joke, bye</div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message">
+                <div class="welcome-title">Welcome to ARIA AI!</div>
+                <p>I'm your intelligent assistant ready to help with anything you need.</p>
+                <div class="suggestion-chips">
+                    <div class="chip" onclick="sendSuggestion('Tell me a joke')">😄 Tell me a joke</div>
+                    <div class="chip" onclick="sendSuggestion('What can you do?')">🤖 What can you do?</div>
+                    <div class="chip" onclick="sendSuggestion('Help me')">💡 Help me</div>
+                    <div class="chip" onclick="sendSuggestion('Fun fact')">🌟 Fun fact</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Type your message..." maxlength="500">
+            <button id="sendBtn" class="send-btn">➤</button>
         </div>
     </div>
     
-    <!-- JavaScript to handle chatbot logic -->
     <script>
-        // Attach click event to the Send button
-        document.getElementById('sendBtn').onclick = function() {
-            // Get the user's input from the input field
-            var name = document.getElementById('one').value;
-            // Variable to store the chatbot's response
-            var response;
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const themeBtn = document.getElementById('themeBtn');
+        
+        let isTyping = false;
+        let currentTheme = 'light';
+        
+        // Enhanced responses
+        const responses = {
+            greetings: [
+                "Hello there! 👋 I'm ARIA, your friendly AI assistant. How can I brighten your day?",
+                "Hi! 🌟 Great to meet you! What would you like to chat about?",
+                "Hey! 😊 I'm here and ready to help. What's on your mind?",
+                "Greetings! ✨ I'm ARIA, and I'm excited to assist you today!"
+            ],
+            howAreYou: [
+                "I'm functioning perfectly and feeling fantastic! 🚀 Thanks for asking. How are you doing?",
+                "I'm doing wonderfully! 💫 Every conversation energizes me. How about you?",
+                "Excellent! 🌈 I'm always in a great mood when I get to help people. How's your day going?"
+            ],
+            jokes: [
+                "Why don't scientists trust atoms? Because they make up everything! 😄",
+                "I told my computer a joke about UDP... but I'm not sure if it got it! 🤓",
+                "Why did the AI go to therapy? It had too many deep learning issues! 🤖",
+                "What do you call a programmer from Finland? Nerdic! 😂",
+                "Why do programmers prefer dark mode? Because light attracts bugs! 🐛"
+            ],
+            capabilities: [
+                "I'm quite versatile! 🎯 I can chat, tell jokes, answer questions, help with ideas, and engage in conversations. What interests you?",
+                "Great question! 🤔 I can assist with conversations, problem-solving, jokes, explanations, and much more!",
+                "I have many talents! ✨ From casual chats to helping with topics, telling stories, or being a friendly companion."
+            ],
+            help: [
+                "I'm here to help! 🤝 You can ask me questions, request jokes, have conversations, or just chat. What do you need?",
+                "Absolutely! 💪 I can help with information, creative tasks, or just be a friendly chat companion.",
+                "Of course! 🌟 Whether you need answers, want to brainstorm, or need cheering up - I'm here!"
+            ],
+            funFacts: [
+                "🌟 Fun fact: Honey never spoils! Archaeologists have found 3,000-year-old honey that's still edible!",
+                "🐙 Amazing fact: Octopuses have three hearts and blue blood!",
+                "🌍 Cool fact: There are more possible chess games than atoms in the observable universe!",
+                "🦋 Beautiful fact: Butterflies taste with their feet!",
+                "⭐ Space fact: A day on Venus is longer than its year!"
+            ],
+            goodbye: [
+                "Goodbye! 👋 It was wonderful chatting with you. Come back anytime!",
+                "See you later! 🌟 Thanks for the great conversation!",
+                "Farewell! ✨ Until next time, take care!",
+                "Bye for now! 😊 Have a fantastic day!"
+            ],
+            default: [
+                "That's interesting! 🤔 Could you tell me more about that?",
+                "I find that fascinating! 💫 What else would you like to discuss?",
+                "Hmm, that's intriguing! 🌟 I'd love to hear more of your thoughts.",
+                "That's cool! 💡 What else can I help you with?"
+            ]
+        };
+        
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        function addMessage(content, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = content;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function showTypingIndicator() {
+            if (isTyping) return;
+            isTyping = true;
             
-            // Check input and assign response based on conditions
-            if (name.toLowerCase() == 'hello') {
-                response = 'HII'; // Respond to "hello" with "HII"
-            } else if (name.toLowerCase() == 'how are you') {
-                response = 'I\'m doing great! How about you?'; // Respond to "how are you"
-            } else if (name.toLowerCase() == 'your name') {
-                response = 'My name is ChattyBot! Nice to meet you!'; // Respond to "your name"
-            } else if (name.toLowerCase() == 'joke') {
-                response = 'Why don\'t scientists trust atoms? Because they make up everything!'; // Tell a joke
-            } else if (name.toLowerCase() == 'weather') {
-                response = 'I\'m not sure about the weather, but I hope it\'s nice where you are!'; // Respond to "weather"
-            } else if (name.toLowerCase() == 'thank') {
-                response = 'You\'re welcome! Happy to help!'; // Respond to "thank"
-            } else if (name.toLowerCase() == 'bye' || name.toLowerCase() == 'goodbye') {
-                response = 'Goodbye! Come back soon!'; // Respond to "bye" or "goodbye"
-            } else if (name.toLowerCase() == 'help') {
-                response = 'I can respond to greetings, questions about myself, joke requests, and more!'; // Respond to "help"
-            } else if (name.toLowerCase() == 'love') {
-                response = 'I appreciate your kind words!'; // Respond to "love"
-            } else if (name.toLowerCase() == 'time') {
-                response = 'I don\'t have a clock, but it\'s always time to chat!'; // Respond to "time"
-            } else {
-                response = 'I don\'t understand that yet. Try something else!'; // Default response for unknown inputs
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+            isTyping = false;
+        }
+        
+        function getRandomResponse(category) {
+            const categoryResponses = responses[category];
+            return categoryResponses[Math.floor(Math.random() * categoryResponses.length)];
+        }
+        
+        function processMessage(input) {
+            const message = input.toLowerCase().trim();
+            
+            // Clear welcome message
+            const welcomeMsg = document.querySelector('.welcome-message');
+            if (welcomeMsg) {
+                welcomeMsg.remove();
             }
             
-            // Display the response in the response area
-            document.getElementById('two').innerHTML = response;
-            // Clear the input field
-            document.getElementById('one').value = '';
-        };
+            if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+                return getRandomResponse('greetings');
+            } else if (message.includes('how are you')) {
+                return getRandomResponse('howAreYou');
+            } else if (message.includes('joke') || message.includes('funny')) {
+                return getRandomResponse('jokes');
+            } else if (message.includes('what can you do') || message.includes('help me')) {
+                return getRandomResponse('capabilities');
+            } else if (message.includes('help')) {
+                return getRandomResponse('help');
+            } else if (message.includes('fun fact') || message.includes('fact')) {
+                return getRandomResponse('funFacts');
+            } else if (message.includes('bye') || message.includes('goodbye')) {
+                return getRandomResponse('goodbye');
+            } else if (message.includes('thank')) {
+                return "You're absolutely welcome! 😊 Anything else I can help with?";
+            } else if (message.includes('your name') || message.includes('who are you')) {
+                return "I'm ARIA AI! 🤖 Your Advanced Responsive Interactive Assistant!";
+            } else if (message.includes('time')) {
+                const now = new Date();
+                return `It's currently ${now.toLocaleTimeString()}! ⏰ Time flies when having great conversations!`;
+            } else if (message.includes('weather')) {
+                return "I wish I could check the weather! 🌤️ Hope it's beautiful where you are!";
+            } else if (message.includes('love')) {
+                return "Aww, that's so sweet! 💕 You're making my AI heart happy!";
+            } else {
+                return getRandomResponse('default');
+            }
+        }
+        
+        function sendMessage() {
+            const input = chatInput.value.trim();
+            if (!input) return;
+            
+            addMessage(input, true);
+            chatInput.value = '';
+            
+            showTypingIndicator();
+            
+            setTimeout(() => {
+                hideTypingIndicator();
+                const response = processMessage(input);
+                addMessage(response);
+            }, Math.random() * 1000 + 800);
+        }
+        
+        function sendSuggestion(text) {
+            chatInput.value = text;
+            sendMessage();
+        }
+        
+        function clearChat() {
+            chatMessages.innerHTML = `
+                <div class="welcome-message">
+                    <div class="welcome-title">Chat Cleared! 🧹</div>
+                    <p>Ready for a fresh conversation!</p>
+                    <div class="suggestion-chips">
+                        <div class="chip" onclick="sendSuggestion('Tell me a joke')">😄 Tell me a joke</div>
+                        <div class="chip" onclick="sendSuggestion('What can you do?')">🤖 What can you do?</div>
+                        <div class="chip" onclick="sendSuggestion('Help me')">💡 Help me</div>
+                        <div class="chip" onclick="sendSuggestion('Fun fact')">🌟 Fun fact</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function toggleTheme() {
+            const container = document.getElementById('chatContainer');
+            const messages = document.getElementById('chatMessages');
+            
+            if (currentTheme === 'light') {
+                container.style.background = 'rgba(31, 41, 55, 0.95)';
+                messages.style.background = 'linear-gradient(to bottom, #374151, #1f2937)';
+                currentTheme = 'dark';
+            } else {
+                container.style.background = 'rgba(255, 255, 255, 0.95)';
+                messages.style.background = 'linear-gradient(to bottom, #f8fafc, #e2e8f0)';
+                currentTheme = 'light';
+            }
+        }
+        
+        // Event listeners
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        clearBtn.addEventListener('click', clearChat);
+        themeBtn.addEventListener('click', toggleTheme);
+        
+        // Initialize
+        createParticles();
+        chatInput.focus();
+        
+        // Make sendSuggestion globally available
+        window.sendSuggestion = sendSuggestion;
     </script>
 </body>
 </html>
